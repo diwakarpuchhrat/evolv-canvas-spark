@@ -80,12 +80,23 @@ export const GalleryGrid = () => {
     );
   }
 
+  // Flatten API artworks
   const allArtworks = data?.pages.flatMap(page => page.data) ?? [];
 
+  // Fallback sample artworks if API is empty
+  const fallbackArtworks = [
+    { id: "1", title: "CryptoPunk #98", imageUrl: "/sample-nfts/cryptopunk98.jpg" },
+    { id: "2", title: "CryptoPunk #99", imageUrl: "/sample-nfts/cryptopunk99.jpg" },
+    { id: "3", title: "CryptoPunk #100", imageUrl: "/sample-nfts/cryptopunk100.jpg" },
+    { id: "4", title: "CryptoPunk #101", imageUrl: "/sample-nfts/cryptopunk101.jpg" },
+  ];
+
+  const artworksToShow = allArtworks.length > 0 ? allArtworks : fallbackArtworks;
+
   // Distribute artworks across columns for masonry layout
-  const columnArrays: typeof allArtworks[] = Array.from({ length: columns }, () => []);
+  const columnArrays: typeof artworksToShow[] = Array.from({ length: columns }, () => []);
   
-  allArtworks.forEach((artwork, index) => {
+  artworksToShow.forEach((artwork, index) => {
     const columnIndex = index % columns;
     columnArrays[columnIndex].push(artwork);
   });
@@ -129,7 +140,7 @@ export const GalleryGrid = () => {
           </div>
         )}
         
-        {!hasNextPage && allArtworks.length > 0 && (
+        {!hasNextPage && artworksToShow.length > 0 && (
           <p className="text-muted-foreground">You've reached the end!</p>
         )}
       </div>

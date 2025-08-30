@@ -67,6 +67,12 @@ export const NFTCard = ({ artwork }: NFTCardProps) => {
     }
   };
 
+  // ✅ Fallback image logic
+  const imageSrc =
+    artwork.coverImageUrl ||
+    (artwork as any).imageUrl || // from GalleryGrid fallback
+    '/sample-nfts/cryptopunk98.jpg'; // final placeholder
+
   return (
     <motion.div
       className={cn(
@@ -98,8 +104,8 @@ export const NFTCard = ({ artwork }: NFTCardProps) => {
           )}
           
           <img
-            src={artwork.coverImageUrl}
-            alt={artwork.title}
+            src={imageSrc}
+            alt={artwork.title || 'NFT Artwork'}
             className={cn(
               'w-full h-full object-cover transition-all duration-500',
               'group-hover:scale-110',
@@ -110,15 +116,19 @@ export const NFTCard = ({ artwork }: NFTCardProps) => {
           />
 
           {/* Hover Overlay */}
-          <div className={cn(
-            'absolute inset-0 bg-black/0 group-hover:bg-black/20',
-            'transition-all duration-300',
-            'flex items-center justify-center'
-          )}>
-            <div className={cn(
-              'flex items-center space-x-4 opacity-0 group-hover:opacity-100',
-              'transition-all duration-300 transform translate-y-4 group-hover:translate-y-0'
-            )}>
+          <div
+            className={cn(
+              'absolute inset-0 bg-black/0 group-hover:bg-black/20',
+              'transition-all duration-300',
+              'flex items-center justify-center'
+            )}
+          >
+            <div
+              className={cn(
+                'flex items-center space-x-4 opacity-0 group-hover:opacity-100',
+                'transition-all duration-300 transform translate-y-4 group-hover:translate-y-0'
+              )}
+            >
               <motion.button
                 className="p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
                 whileHover={{ scale: 1.1 }}
@@ -152,23 +162,24 @@ export const NFTCard = ({ artwork }: NFTCardProps) => {
         <div className="p-4">
           {/* Title */}
           <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-            {artwork.title}
+            {artwork.title || 'Untitled'}
           </h3>
 
           {/* Meta Info */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center text-sm text-muted-foreground">
               <User className="h-3 w-3 mr-1" />
-              <span>Owner #{artwork.ownerId}</span>
+              <span>Owner #{artwork.ownerId || 'N/A'}</span>
             </div>
             
             <span className="text-xs text-muted-foreground">
-              {artwork.evolutions.length} evolution{artwork.evolutions.length !== 1 ? 's' : ''}
+              {artwork.evolutions?.length || 0} evolution
+              {(artwork.evolutions?.length || 0) !== 1 ? 's' : ''}
             </span>
           </div>
 
           {/* Tags */}
-          {artwork.tags.length > 0 && (
+          {artwork.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {artwork.tags.slice(0, 3).map((tag) => (
                 <Badge 
